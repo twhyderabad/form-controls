@@ -34,10 +34,12 @@ module.exports = {
     }
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.(js|jsx)$/,
-        loaders: ['babel'],
+        use: {
+            loader: "babel-loader"
+        },
         include: path.join(__dirname, 'src')
       },
       {
@@ -46,7 +48,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loaders: ["style", "css", "sass"]
+          loaders: ["style-loader", "css-loader","sass-loader"]
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,

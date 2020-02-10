@@ -16,49 +16,54 @@ module.exports = {
     'react/addons': true
   },
   module: {
-    loaders: [
-      {
-        test: /\.(js|jsx)$/,
-        loaders: ['babel'],
-        include: path.join(__dirname, 'src')
-      },
-      {
-        test: /\.js$/,
-        loaders: ['babel-loader'],
-        include: path.join(__dirname, 'test')
-      },
-      {
-        test: /\.json$/,
-        loader: 'json'
-      },
-      {
-        test: /\.scss$/,
-        loaders: ["style", "css", "sass"]
-      },
-      {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "url-loader?limit=10000&mimetype=application/font-woff"
-      },
-      {
-        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "file-loader"
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/i,
-        loader: 'file-loader?name=/styles/images/[name].[ext]',
-      },
-    ],
-    preLoaders: [
-      {
-        test: /\.(js|jsx)$/,
-        include: path.join(__dirname, 'src'),
-        loader: 'isparta',
-        exclude: [
-          /helpers\/ControlRecordTreeMgr\.js/,
-          /ControlState\.js/,
-        ],
-      },
-    ]
+      rules: [
+          {
+              test: /\.(js|jsx)$/,
+              enforce: "pre",
+              include: path.join(__dirname, 'src'),
+              loader: 'isparta-loader',
+              exclude: [
+                  /helpers\/ControlRecordTreeMgr\.js/,
+                  /ControlState\.js/,
+              ],
+          },
+          {
+              test: /\.(js|jsx)$/,
+              loader: 'babel-loader',
+              include: path.join(__dirname, 'src'),
+              options: {
+                  presets: ["env"]
+              }
+          },
+          {
+              test: /\.js$/,
+              loader: 'babel-loader',
+              include: path.join(__dirname, 'test')
+          },
+          {
+              test: /\.json$/,
+              loader: 'json-loader',
+              exclude: [
+                  /node_modules/
+              ]
+          },
+          {
+              test: /\.scss$/,
+              loaders: ["style", "css", "sass"]
+          },
+          {
+              test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+              loader: "url-loader?limit=10000&mimetype=application/font-woff"
+          },
+          {
+              test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+              loader: "file-loader"
+          },
+          {
+              test: /\.(jpe?g|png|gif|svg)$/i,
+              loader: 'file-loader?name=/styles/images/[name].[ext]',
+          },
+      ]
   },
   resolve: {
     alias: {
