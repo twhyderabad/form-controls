@@ -1,0 +1,13 @@
+
+
+{
+  "presets": ["@babel/preset-react",
+    ["@babel/preset-env",
+      {"targets": {
+        "chrome": 50
+      }
+    }]
+  ],
+  "plugins": ["@babel/plugin-proposal-object-rest-spread"]
+}
+

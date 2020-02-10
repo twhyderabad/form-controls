@@ -38,7 +38,12 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         use: {
-            loader: "babel-loader"
+            loader: "babel-loader",
+            options: {
+                presets: [
+                    ['@babel/preset-env', { modules: false }]
+                ]
+            }
         },
         include: path.join(__dirname, 'src')
       },
