@@ -81,6 +81,8 @@ export class Container extends addMoreDecorator(Component) {
       data: previousState.data.update(formFieldPath, value, errors),
       collapse: undefined,
     }), onActionDone);
+    const obs=  this.getValue();
+    this.props.updateForm(this.state.data, obs);
   }
 
 
@@ -157,7 +159,7 @@ export class Container extends addMoreDecorator(Component) {
   render() {
     const { metadata: { controls,
       name: formName, version: formVersion }, validate, translations, patient } = this.props;
-    const formTranslations = { ...translations.labels, ...translations.concepts };
+    const formTranslations = {  };
     const patientUuid = patient ? patient.uuid : undefined;
     const childProps = {
       collapse: this.state.collapse,
@@ -207,5 +209,6 @@ Container.propTypes = {
   translations: PropTypes.object.isRequired,
   validate: PropTypes.bool.isRequired,
   validateForm: PropTypes.bool.isRequired,
+    updateForm: PropTypes.func
 };
 
