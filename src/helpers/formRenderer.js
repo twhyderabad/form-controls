@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ControlRecordTreeBuilder from 'src/helpers/ControlRecordTreeBuilder';
 import ScriptRunner from './ScriptRunner';
+import ObservationMapper from "./ObservationMapper";
 
 window.renderWithControls =
   function renderWithControls(formDetails, observations, nodeId,
@@ -25,4 +26,8 @@ window.runScript = (form) => {
   const component = form.component;
   return new ScriptRunner(component.state.data, component.props.patient)
       .execute(form.events.onFormSave);
+};
+
+window.getObservations = (records) => {
+  return new ObservationMapper().from(records);
 };

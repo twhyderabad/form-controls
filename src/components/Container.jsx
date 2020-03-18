@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { displayRowControls, getGroupedControls } from '../helpers/controlsParser';
 import isEmpty from 'lodash/isEmpty';
@@ -36,7 +36,7 @@ export class Container extends addMoreDecorator(Component) {
     }
     const controls = this.props.metadata.controls;
     updatedTree = updatedTree || this.state.data;
-    updatedTree = this.executeAllControlEvents(controls, updatedTree);
+    updatedTree = this.executeAllControlEvhents(controls, updatedTree);
     this.setState({
       data: updatedTree,
     });
@@ -62,7 +62,24 @@ export class Container extends addMoreDecorator(Component) {
 
   componentWillReceiveProps(nextProps) {
     this.setState({ collapse: nextProps.collapse });
+    console.log(" receive props ", this.props);
+    // if(this.props.records){
+    //   console.log(" records ", this.props.records);
+    //   this.setState({data: this.props.records});
+    // }
   }
+
+  static getDerivedStateFromProps (nextProps, prevState) {
+      console.log('TRIGGERED after save', nextProps);
+      console.log('TRIGGERED after save', prevState);
+      if (nextProps.collapse!==prevState.collapse){
+          return { collapse: nextProps.collapse};
+      }
+      if(!_.isEmpty(nextProps.records)){
+          return {data: nextProps.records};
+      }
+      return null;
+  };
 
   onEventTrigger(sender, eventName) {
     const eventScripts = ControlRecordTreeMgr.find(this.state.data, sender).getEventScripts();
@@ -81,8 +98,12 @@ export class Container extends addMoreDecorator(Component) {
       data: previousState.data.update(formFieldPath, value, errors),
       collapse: undefined,
     }), onActionDone);
-    const obs=  this.getValue();
-    this.props.updateForm(this.state.data, obs);
+    let obs = this.getValue();
+      console.log(" on value change ",obs);
+
+      obs.observations.forEach(observ => observ.value  = observ.formFieldPath === formFieldPath ? value.value : observ.value);
+    if(this.props.valueChanged)
+      this.props.valueChanged(this.state.data, obs.observations);
   }
 
 
@@ -157,6 +178,7 @@ export class Container extends addMoreDecorator(Component) {
   }
 
   render() {
+    console.log('AFTER TRIGGER', this.state.data);
     const { metadata: { controls,
       name: formName, version: formVersion }, validate, translations, patient } = this.props;
     const formTranslations = {  };
@@ -177,8 +199,9 @@ export class Container extends addMoreDecorator(Component) {
       validateForm: this.props.validateForm,
     };
     const groupedRowControls = getGroupedControls(controls, 'row');
+    console.log(" in render ", this.state.data);
     const records = this.state.data.getActive().children.toArray();
-    return (
+      return (
       <IntlProvider locale="en" messages={formTranslations}>
         <div>
           <NotificationContainer
@@ -209,6 +232,7 @@ Container.propTypes = {
   translations: PropTypes.object.isRequired,
   validate: PropTypes.bool.isRequired,
   validateForm: PropTypes.bool.isRequired,
-    updateForm: PropTypes.func
+  valueChanged: PropTypes.func,
+  records: PropTypes.object
 };
 
